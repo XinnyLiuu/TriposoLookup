@@ -2,18 +2,16 @@ const axios = require("axios");
 const fs = require("fs");
 
 /**
- * This script will fetch the data available at each url listed below and create json dump file that can be used and added into MongoDB.
+ * This script will fetch the data available at each country listed below and create json dump file that can be used and added into MongoDB.
+ * 
+ * Countries were taken from https://www.worldatlas.com/articles/10-most-visited-countries-in-the-world.html.
+ * 
+ * https://www.farandwide.com/s/best-time-to-travel-around-the-world-0df967e053fa4328
+ * 
+ * The country ISO codes need to be 2 characters long ONLY.
  */
-const US_LOC_QUERY = "https://www.triposo.com/api/20190906/location.json?account=OGIER92O&token=5ramecfgkf0u2x0hw8eatg3008f4krkt&countrycode=US&count=100&fields=images,coordinates,intro,climate,name,part_of";
-const CA_LOC_QUERY = "https://www.triposo.com/api/20190906/location.json?account=OGIER92O&token=5ramecfgkf0u2x0hw8eatg3008f4krkt&countrycode=CA&count=100&fields=images,coordinates,intro,climate,name,part_of";
-const EG_LOC_QUERY = "https://www.triposo.com/api/20190906/location.json?account=OGIER92O&token=5ramecfgkf0u2x0hw8eatg3008f4krkt&countrycode=EG&count=100&fields=images,coordinates,intro,climate,name,part_of";
-const DE_LOC_QUERY = "https://www.triposo.com/api/20190906/location.json?account=OGIER92O&token=5ramecfgkf0u2x0hw8eatg3008f4krkt&countrycode=DE&count=100&fields=images,coordinates,intro,climate,name,part_of";
-
 const query_arr = [
-    US_LOC_QUERY,
-    CA_LOC_QUERY,
-    EG_LOC_QUERY,
-    DE_LOC_QUERY
+    "UK", "TH", "DE", "MX", "TR", "IT", "CN", "US", "ES", "FR", "PL", "CA", "PT", "RU", "MY", "GR", "AT", "JP"
 ];
 
 let json = [];
@@ -24,7 +22,9 @@ let json = [];
 function getData() {
     let count = 0
 
-    query_arr.forEach(async url => {
+    query_arr.forEach(async country => {
+        let url = `https://www.triposo.com/api/20190906/location.json?account=OGIER92O&token=5ramecfgkf0u2x0hw8eatg3008f4krkt&countrycode=${country}&count=100&fields=images,coordinates,intro,climate,name,part_of`;
+
         try {
             // Fire request calls
             const resp = await axios.get(url);

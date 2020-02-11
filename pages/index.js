@@ -12,7 +12,7 @@ import Home from "../components/Home";
 const Index = () => {
 	return (
 		<React.Fragment>
-			<Nav/>
+			<Nav />
 			<Home />
 		</React.Fragment>
 	);

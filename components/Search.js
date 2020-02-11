@@ -2,6 +2,10 @@ import React from 'react';
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 
+/**
+ * Refer to https://material-ui.com/components/autocomplete/
+ */
+
 class Search extends React.Component {
 	constructor(props) {
 		super(props);
