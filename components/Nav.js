@@ -6,10 +6,6 @@ import {
 	Typography,
 	IconButton
 } from '@material-ui/core';
-import {
-	ThemeProvider
-} from '@material-ui/core/styles';
-import Theme from "./Theme";
 
 /**
  * Navbar
@@ -30,19 +26,17 @@ const Nav = () => {
 	const classes = useStyles();
 
 	return (
-		<ThemeProvider theme={Theme}>
-			<div className={classes.root}>
-				<AppBar position="static">
-					<Toolbar>
-						<IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-						</IconButton>
-						<Typography variant="h6" className={classes.title}>
-							Triposo Lookup
+		<div className={classes.root}>
+			<AppBar position="static">
+				<Toolbar>
+					<IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+					</IconButton>
+					<Typography variant="h6" className={classes.title}>
+						Triposo Lookup
 					</Typography>
-					</Toolbar>
-				</AppBar>
-			</div>
-		</ThemeProvider>
+				</Toolbar>
+			</AppBar>
+		</div>
 	);
 }
 
