@@ -1,11 +1,16 @@
 import React from 'react';
 import SearchCard from "./SearchCard";
 import TextField from '@material-ui/core/TextField';
-import Autocomplete from '@material-ui/lab/Autocomplete';
+import {
+	Autocomplete,
+	Alert,
+	AlertTitle
+} from '@material-ui/lab';
 import {
 	Button, Grid
 } from "@material-ui/core";
 import Spinner from './Spinner';
+
 
 /**
  * Refer to https://material-ui.com/components/autocomplete/
@@ -18,16 +23,18 @@ class Search extends React.Component {
 		this.state = {
 			searchValue: "",
 			searchResults: "",
-			showSpinner: false
+			showSpinner: false,
+			noResults: false
 		}
 
 		// Bind, "this" for handle methods
 		this.handleSearchButtonOnClick = this.handleSearchButtonOnClick.bind(this);
 		this.handleTextFieldOnChange = this.handleTextFieldOnChange.bind(this);
+		this.handleLocationButtonOnClick = this.handleLocationButtonOnClick.bind(this);
 	}
 
 	/**
-	 * Calls a GET request to /api/match
+	 * Calls a GET request to /api/location/match
 	 */
 	async fetchMatchingData(value) {
 		try {
@@ -42,9 +49,48 @@ class Search extends React.Component {
 			// Get data
 			const data = await resp.json();
 
-			// Set the state 
+			if (data.length > 0) {
+				this.setState({
+					searchResults: data,
+					showSpinner: false
+				})
+			}
+
 			this.setState({
-				searchResults: data,
+				noResults: true,
+				showSpinner: false
+			})
+		} catch (e) {
+			// TODO: Error handling
+			console.log(e);
+		}
+	}
+
+	/**
+	 * Calls a GET request to /api/location/nearby
+	 */
+	async fetchNearbyData(coords) {
+		try {
+			const resp = await fetch("/api/location/nearby", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json"
+				},
+				body: JSON.stringify(coords)
+			});
+
+			// Get data
+			const data = await resp.json();
+
+			if (data.length > 0) {
+				this.setState({
+					searchResults: data,
+					showSpinner: false
+				})
+			}
+
+			this.setState({
+				noResults: true,
 				showSpinner: false
 			})
 		} catch (e) {
@@ -61,10 +107,33 @@ class Search extends React.Component {
 		if (this.state.searchValue !== "") {
 			this.setState({
 				showSpinner: true, // Show the spinner
-				searchResults: "" // Get rid of any prior stored results data
+				searchResults: "", // Get rid of any prior stored results data
+				noResults: false,
 			});
 
+			// Get data
 			this.fetchMatchingData(this.state.searchValue)
+		}
+	}
+
+	/**
+	 * Handles the location button on click
+	 */
+	handleLocationButtonOnClick() {
+		if (this.props.location !== undefined || this.props.location !== null) {
+			// Get the coordinates of the user
+			const location = this.props.location;
+
+			const lat = location.latitude;
+			const long = location.longitude;
+
+			const coords = {
+				lat: lat,
+				long: long
+			};
+
+			// Get data nearby the specified location
+			this.fetchNearbyData(coords);
 		}
 	}
 
@@ -74,44 +143,25 @@ class Search extends React.Component {
 	handleTextFieldOnChange(e) {
 		this.setState({
 			searchValue: e.target.value,
-			searchResults: "" // TODO: Play with this. The react component becomes slower once data in state exceeds a big amounts
+			searchResults: "",
+			noResults: false
 		})
 	}
 
 	render() {
 		// Build the search form
 		const searchForm = (
-			<Grid
-				container
-				direction="row"
-				justify="center"
-				alignItems="center"
-			>
-				<Grid
-					item
-					style={{ width: 300, marginRight: 10 }}
-				>
-					<Autocomplete
-						freeSolo
-						disableClearable
-						// options={this.props.data.map(d => d.name)}
-						renderInput={params => (
-							<TextField
-								{...params}
-								label="Search a String (US Locations)"
-								margin="normal"
-								variant="outlined"
-								fullWidth
-								InputProps={{ ...params.InputProps, type: 'search' }}
-								onChange={this.handleTextFieldOnChange}
-							/>
-						)}
-					/>
+			<Grid container direction="row" justify="center" alignItems="center">
+				<Grid item style={{ width: 300, marginRight: 10 }}>
+					<TextField label="Search a String (US Locations)" margin="normal" fullWidth type="search" variant="outlined" />
 				</Grid>
 				<Grid item>
-					<Button variant="outlined" color="primary" onClick={this.handleSearchButtonOnClick}>
+					<Button variant="contained" color="primary" onClick={this.handleSearchButtonOnClick} style={{ marginRight: "5px" }}>
 						Search
-				</Button>
+					</Button>
+					<Button variant="outlined" color="primary" onClick={this.handleLocationButtonOnClick}>
+						Locate
+					</Button>
 				</Grid>
 			</Grid>
 		);
@@ -135,14 +185,7 @@ class Search extends React.Component {
 				<React.Fragment>
 					{searchForm}
 					<div style={{ flexGrow: 1 }}>
-						<Grid
-							container
-							spacing={3}
-							style={{
-								width: "unset",
-								margin: "unset"
-							}}
-						>
+						<Grid container spacing={3} style={{ width: "unset", margin: "unset" }}>
 							{cards}
 						</Grid>
 					</div>
@@ -156,6 +199,19 @@ class Search extends React.Component {
 				<React.Fragment>
 					{searchForm}
 					<Spinner />
+				</React.Fragment>
+			)
+		}
+
+		// Check if no results are found
+		if (this.state.noResults) {
+			return (
+				<React.Fragment>
+					{searchForm}
+					<Alert severity="warning">
+						<AlertTitle>No Results!</AlertTitle>
+						No locations have been found matching your search.
+					</Alert>
 				</React.Fragment>
 			)
 		}

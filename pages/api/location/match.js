@@ -3,7 +3,7 @@ import { connect, find } from "../../../utils/mongo";
 /**
  * Refer to https://nextjs.org/docs/api-routes/introduction
  * 
- * This file routes to the endpoint /api/match
+ * This file routes to the endpoint /api/location/match
  * 
  * Takes in a query and uses it to query MongoDB and returns matching doucments
  */

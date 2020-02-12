@@ -1,10 +1,9 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import Router from "next/router";
 import {
 	AppBar,
 	Toolbar,
-	Typography,
-	IconButton
+	Typography
 } from '@material-ui/core';
 
 /**
@@ -13,30 +12,15 @@ import {
  * Refer to https://material-ui.com/components/app-bar/
  */
 
-const useStyles = makeStyles(theme => ({
-	root: {
-		flexGrow: 1,
-	},
-	title: {
-		flexGrow: 1,
-	}
-}));
-
 const Nav = () => {
-	const classes = useStyles();
-
 	return (
-		<div className={classes.root}>
-			<AppBar position="static">
-				<Toolbar>
-					<IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-					</IconButton>
-					<Typography variant="h6" className={classes.title}>
-						Triposo Lookup
+		<AppBar position="static">
+			<Toolbar>
+				<Typography variant="h6" onClick={() => { Router.push("/") }}>
+					Triposo Lookup
 					</Typography>
-				</Toolbar>
-			</AppBar>
-		</div>
+			</Toolbar>
+		</AppBar>
 	);
 }
 

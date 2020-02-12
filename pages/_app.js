@@ -4,7 +4,6 @@
  * Global CSS are to be imported here
  */
 import "../public/styles.css";
-import "../public/roboto.css";
 
 // This default export is required in a new `pages/_app.js` file.
 export default function MyApp({ Component, pageProps }) {
