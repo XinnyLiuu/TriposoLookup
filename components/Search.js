@@ -94,7 +94,7 @@ class Search extends React.Component {
 					<Autocomplete
 						freeSolo
 						disableClearable
-						options={this.props.data.map(d => d.name)}
+						// options={this.props.data.map(d => d.name)}
 						renderInput={params => (
 							<TextField
 								{...params}
