@@ -2,6 +2,7 @@ import React from "react";
 import { useRouter } from "next/router";
 import Spinner from "../../components/Spinner";
 import Layout from "../../components/Layout";
+import Details from "../../components/Details";
 
 /**
  * This file routes to /location/:id 
@@ -19,12 +20,11 @@ const LocationId = () => {
     // Check if id exists
     if (id !== undefined || id !== null) {
         try {
-            // Get the location based on id
-            // TODO: Build out component to show the location details
+            // Render the location deatils
             return (
-                <Layout component={<p>{id}</p>} />
+                <Layout component={<Details id={id} />} />
             )
-        } catch(e) {
+        } catch (e) {
             // TODO: Error handling
             console.log(e);
         }
@@ -33,23 +33,6 @@ const LocationId = () => {
     return (
         <Layout component={<Spinner />} />
     );
-}
-
-/**
- * Retrieves the location based on the id given
- * 
- * @param {*} id 
- */
-async function getLocation(id) {
-    try {
-        const resp = await fetch(`/api/location/${id}`);
-        const location = await resp.json();
-
-        return location;
-    } catch(e) {
-        // TODO: Error handling
-        console.log(e);
-    }
 }
 
 export default LocationId;

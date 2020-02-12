@@ -49,7 +49,7 @@ class Search extends React.Component {
 			})
 		} catch (e) {
 			// TODO: Error handling
-			alert(e);
+			console.log(e);
 		}
 	}
 
