@@ -32,6 +32,7 @@ export const connect = async () => {
 export const find = async (db, query) => {
 	try {
 		const docs = await db.collection(COLLECTION).find(query).toArray();
+
 		return docs;
 	} catch (e) {
 		// TODO: Add error handler

@@ -26,9 +26,10 @@ class SearchCard extends React.Component {
 					<Typography variant="body2" color="textSecondary" component="p">
 						{this.props.intro}
 					</Typography>
+					<input type="hidden" data-id={this.props.id} />
 				</CardContent>
 				<CardActions>
-					<Button size="small" color="primary">Select</Button>
+					<Button size="small" color="primary" >Select</Button>
 				</CardActions>
 			</Card>
 		)

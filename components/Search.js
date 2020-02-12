@@ -128,7 +128,7 @@ class Search extends React.Component {
 			results.forEach(r => {
 				cards.push(
 					<Grid item xs={4}>
-						<SearchCard name={r.name} intro={r.intro} />
+						<SearchCard name={r.name} intro={r.intro} id={r._id} />
 					</Grid>
 				)
 			});
