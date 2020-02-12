@@ -4,6 +4,7 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
+import Router from "next/router";
 
 /**
  * Refer to https://material-ui.com/components/cards/
@@ -16,20 +17,30 @@ class SearchCard extends React.Component {
 		this.state = {};
 	}
 
+	/**
+	 * Handles and redirects the View button
+	 */
+	handleViewOnClick(id) {
+		// Redirect to location details page
+		Router.push(`/location/${id}`);
+	}
+
 	render() {
 		return (
 			<Card style={{ minWidth: 275 }}>
 				<CardContent>
-					<Typography gutterBottom variant="h5" component="h2">
+					<Typography gutterBottom variant="h5">
 						{this.props.name}
 					</Typography>
-					<Typography variant="body2" color="textSecondary" component="p">
+					<Typography gutterBottom variant="subtitle2">
+						{this.props.state}
+					</Typography>
+					<Typography variant="body1" color="textSecondary">
 						{this.props.intro}
 					</Typography>
-					<input type="hidden" data-id={this.props.id} />
 				</CardContent>
 				<CardActions>
-					<Button size="small" color="primary" >Select</Button>
+					<Button color="primary" onClick={() => this.handleViewOnClick(this.props.id)}>View</Button>
 				</CardActions>
 			</Card>
 		)

@@ -35,8 +35,6 @@ export default async (req, res) => {
  * @param {*} query 
  */
 async function getDocById(query) {
-    console.log(query);
-
     try {
         // Connect to MongoDB
         const db = await connect();

@@ -57,7 +57,6 @@ class Search extends React.Component {
 	 * Handles the search button on click
 	 */
 	handleSearchButtonOnClick() {
-		console.log(this.state.searchResults);
 		// Get the value and query the database for any documents that has it. ie.) “Foo”, should find “Food” or “Work” should find “Working”, but not “rework”
 		if (this.state.searchValue !== "") {
 			this.setState({
@@ -95,15 +94,14 @@ class Search extends React.Component {
 					<Autocomplete
 						freeSolo
 						disableClearable
-						// options={this.props.data.map(d => d.name)}
+						options={this.props.data.map(d => d.name)}
 						renderInput={params => (
 							<TextField
 								{...params}
-								label="Search a String"
+								label="Search a String (US Locations)"
 								margin="normal"
 								variant="outlined"
 								fullWidth
-								value={this.state.searchValue}
 								InputProps={{ ...params.InputProps, type: 'search' }}
 								onChange={this.handleTextFieldOnChange}
 							/>
@@ -128,7 +126,7 @@ class Search extends React.Component {
 			results.forEach(r => {
 				cards.push(
 					<Grid item xs={4}>
-						<SearchCard name={r.name} intro={r.intro} id={r._id} />
+						<SearchCard name={r.name} intro={r.intro} id={r._id} state={r.part_of[0]} />
 					</Grid>
 				)
 			});
@@ -153,7 +151,14 @@ class Search extends React.Component {
 		}
 
 		// Check if spinner is toggled
-		if (this.state.showSpinner) return <Spinner />;
+		if (this.state.showSpinner) {
+			return (
+				<React.Fragment>
+					{searchForm}
+					<Spinner />
+				</React.Fragment>
+			)
+		}
 
 		return searchForm;
 	}

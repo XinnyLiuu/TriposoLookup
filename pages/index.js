@@ -1,9 +1,5 @@
-import Nav from "../components/Nav";
 import Home from "../components/Home";
-import {
-	ThemeProvider
-} from '@material-ui/core/styles';
-import Theme from "../components/Theme";
+import Layout from "../components/Layout";
 
 /**
  * Refer to https://nextjs.org/docs/basic-features/pages
@@ -15,10 +11,7 @@ import Theme from "../components/Theme";
 
 const Index = () => {
 	return (
-		<ThemeProvider theme={Theme}>
-			<Nav />
-			<Home />
-		</ThemeProvider>
+		<Layout component={<Home />} />
 	);
 }
 
