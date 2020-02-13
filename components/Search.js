@@ -2,7 +2,6 @@ import React from 'react';
 import SearchCard from "./SearchCard";
 import TextField from '@material-ui/core/TextField';
 import {
-	Autocomplete,
 	Alert,
 	AlertTitle
 } from '@material-ui/lab';
@@ -132,6 +131,10 @@ class Search extends React.Component {
 				long: long
 			};
 
+			this.setState({
+				showSpinner: true
+			})
+
 			// Get data nearby the specified location
 			this.fetchNearbyData(coords);
 		}
@@ -153,7 +156,7 @@ class Search extends React.Component {
 		const searchForm = (
 			<Grid container direction="row" justify="center" alignItems="center">
 				<Grid item style={{ width: 300, marginRight: 10 }}>
-					<TextField label="Search a String (US Locations)" margin="normal" fullWidth type="search" variant="outlined" />
+					<TextField label="Search a String (US Locations)" margin="normal" fullWidth type="search" variant="outlined" onChange={this.handleTextFieldOnChange} />
 				</Grid>
 				<Grid item>
 					<Button variant="contained" color="primary" onClick={this.handleSearchButtonOnClick} style={{ marginRight: "5px" }}>

@@ -18,7 +18,7 @@ const Nav = () => {
 			<Toolbar>
 				<Typography variant="h6" onClick={() => { Router.push("/") }}>
 					Triposo Lookup
-					</Typography>
+				</Typography>
 			</Toolbar>
 		</AppBar>
 	);
