@@ -103,12 +103,14 @@ class Search extends React.Component {
 	 */
 	handleSearchButtonOnClick() {
 		// Get the value and query the database for any documents that has it. ie.) “Foo”, should find “Food” or “Work” should find “Working”, but not “rework”
-		if (this.state.searchValue !== "") {
+		if (this.state.searchValue !== "" || localStorage.getItem("searchValue") !== "") {
 			this.setState({
 				showSpinner: true, // Show the spinner
 				searchResults: "", // Get rid of any prior stored results data
 				noResults: false,
 			});
+
+			localStorage.setItem("searchValue", this.state.searchValue);
 
 			// Get data
 			this.fetchMatchingData(this.state.searchValue)
@@ -149,6 +151,14 @@ class Search extends React.Component {
 			searchResults: "",
 			noResults: false
 		})
+
+		localStorage.setItem("searchValue", e.target.value);
+	}
+
+	componentDidMount() {
+		this.setState({
+			searchValue: localStorage.getItem("searchValue")
+		})
 	}
 
 	render() {
@@ -156,7 +166,7 @@ class Search extends React.Component {
 		const searchForm = (
 			<Grid container direction="row" justify="center" alignItems="center">
 				<Grid item style={{ width: 300, marginRight: 10 }}>
-					<TextField label="Search a String (US Locations)" margin="normal" fullWidth type="search" variant="outlined" onChange={this.handleTextFieldOnChange} />
+					<TextField label="Search a String (US Locations)" margin="normal" fullWidth type="search" value={this.state.searchValue} variant="outlined" onChange={this.handleTextFieldOnChange} />
 				</Grid>
 				<Grid item>
 					<Button variant="contained" color="primary" onClick={this.handleSearchButtonOnClick} style={{ marginRight: "5px" }}>

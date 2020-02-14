@@ -1,8 +1,9 @@
 import MongoClient from "mongodb";
+import { GridFSBucket } from "mongodb";
 
-const CONNECTION_URL = "mongodb://localhost:27017";
 const DB_NAME = "triposo";
 const COLLECTION = "locations";
+const CONNECTION_URL = "mongodb://localhost:27017";
 
 /**
  * Connect to MongoDB and returns the db object
@@ -36,6 +37,31 @@ export const find = async (db, query) => {
 		return docs;
 	} catch (e) {
 		// TODO: Add error handler
+		console.log(e);
+	}
+}
+
+/**
+ * Prepare the image stored in GridFS 
+ * 
+ * @param {*} db 
+ * @param {*} file 
+ */
+export const getImage = (db, file) => {
+	try {
+		// Create GridFS bucket
+		const bucket = new GridFSBucket(db);
+
+		// Download the image file with specified name and build the image data 
+		const chunks = [];
+		return new Promise((resolve, reject) => {
+			bucket.openDownloadStreamByName(file)
+				.on('data', (chunk) => chunks.push(chunk))
+				.on('error', (err) => reject(err))
+				.on('end', () => resolve(Buffer.concat(chunks).toString("base64")));
+		})
+	} catch (e) {
+		// TODO:
 		console.log(e);
 	}
 }

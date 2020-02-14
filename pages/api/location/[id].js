@@ -1,5 +1,5 @@
 
-import { connect, find } from "../../../utils/mongo";
+import { connect, find, getImage } from "../../../utils/mongo";
 import { ObjectId } from "mongodb";
 
 /**
@@ -40,7 +40,14 @@ async function getDocById(query) {
         const db = await connect();
 
         // Get the document
-        const doc = await find(db, query);
+        let doc = await find(db, query);
+        doc = doc[0];
+
+        // Get the image 
+        if (doc.gridFSFile !== undefined) {
+            const image = await getImage(db, doc.gridFSFile);
+            doc.image = `data:image/jpeg;base64,${image}`;
+        }
 
         return doc;
     } catch (e) {

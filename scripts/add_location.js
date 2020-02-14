@@ -44,7 +44,7 @@ function addLoc() {
 
                 // Save the updated document
                 collectionLocations.save(doc);
-                printjson(doc);
+                // printjson(doc);
             }
         }
     });
