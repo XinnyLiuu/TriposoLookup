@@ -1,7 +1,7 @@
 /**
  * This script is to be ran through mongo and adds a '2dsphere' index and parses the dataset to add a 'loc' field that will be used by MongoDB to query for geolocation
  * 
- * Use this script after the database has been set up
+ * USAGE: `mongo add_location.js`
  */
 
 // Connection + Data
