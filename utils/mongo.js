@@ -48,20 +48,18 @@ export const find = async (db, query) => {
  * @param {*} file 
  */
 export const getImage = (db, file) => {
-	try {
-		// Create GridFS bucket
-		const bucket = new GridFSBucket(db);
+	// Create GridFS bucket
+	const bucket = new GridFSBucket(db);
 
-		// Download the image file with specified name and build the image data 
-		const chunks = [];
-		return new Promise((resolve, reject) => {
-			bucket.openDownloadStreamByName(file)
-				.on('data', (chunk) => chunks.push(chunk))
-				.on('error', (err) => reject(err))
-				.on('end', () => resolve(Buffer.concat(chunks).toString("base64")));
-		})
-	} catch (e) {
-		// TODO:
-		console.log(e);
-	}
+	// Download the image file with specified name and build the image data 
+	const chunks = [];
+	return new Promise((resolve, reject) => {
+		bucket.openDownloadStreamByName(file)
+			.on('data', (chunk) => chunks.push(chunk))
+			.on('error', (err) => {
+				// We still want the page to load, return undefined
+				resolve(undefined)
+			})
+			.on('end', () => resolve(Buffer.concat(chunks).toString("base64")));
+	})
 }

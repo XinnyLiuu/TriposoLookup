@@ -156,9 +156,14 @@ class Search extends React.Component {
 	}
 
 	componentDidMount() {
-		this.setState({
-			searchValue: localStorage.getItem("searchValue")
-		})
+		// Check if a search value has been queried before
+		if (localStorage.getItem("searchValue") !== "") {
+			this.setState({
+				searchValue: localStorage.getItem("searchValue")
+			}, () => {
+				this.fetchMatchingData(this.state.searchValue);
+			})
+		}
 	}
 
 	render() {

@@ -45,13 +45,12 @@ class Details extends React.Component {
 		if (this.state.data !== "") {
 			const details = JSON.parse(this.state.data);
 
-			// TODO: For climate temperature parse through the records and get the average temperature across maxes and mins
 			return (
 				<Grid container direction="row" alignItems="center" justify="center" className={classes.content}>
 					<Grid item md={3}>
 						<Card>
-							<CardMedia component="img" height="50%" image={details.image} title={details.name}
-							/>
+							{details.image !== undefined ? <CardMedia component="img" height="50%" image={details.image} title={details.name}
+							/> : <span></span>}
 							<CardContent>
 								<Typography gutterBottom variant="h3">
 									{details.name}
