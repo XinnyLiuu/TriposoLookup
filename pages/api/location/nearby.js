@@ -30,14 +30,10 @@ export default async (req, res) => {
         try {
             // Get the docs and return it
             const docs = await queryNearbyDocs(query);
-
             return res.status(200).json(docs);
         } catch (e) {
-            // TODO: Error handling 
-            console.log(e);
+            return res.status(500).end();
         }
-    } else {
-        // TODO: Handle any other requests
     }
 }
 
@@ -51,11 +47,8 @@ async function queryNearbyDocs(query) {
         const db = await connect();
 
         // Get every matching document in MongoDB
-        const docs = await find(db, query);
-
-        return docs;
+        return await find(db, query);
     } catch (e) {
-        // TODO: Add error handler
-        console.log(e);
+        throw new Error(e);
     }
 }

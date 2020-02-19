@@ -29,14 +29,14 @@ export default async (req, res) => {
 			const docs = await queryMatchedDocs(query);
 			return res.status(200).json(docs);
 		} catch (e) {
-			// TODO: Error handling 
-			console.log(e);
+			return res.status(500).end();
 		}
 	}
 }
 
 /**
  * Query db for all matching documents
+ * 
  * @param {*} query 
  */
 async function queryMatchedDocs(query) {
@@ -45,11 +45,8 @@ async function queryMatchedDocs(query) {
 		const db = await connect();
 
 		// Get every matching document in MongoDB
-		const docs = await find(db, query);
-
-		return docs;
+		return await find(db, query);
 	} catch (e) {
-		// TODO: Add error handler
-		console.log(e);
+		throw new Error(e);
 	}
 }

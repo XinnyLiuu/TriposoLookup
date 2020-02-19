@@ -8,7 +8,6 @@ import {
 } from "@material-ui/core";
 import Spinner from './Spinner';
 
-
 /**
  * Refer to https://material-ui.com/components/autocomplete/
  */
@@ -21,7 +20,8 @@ class Search extends React.Component {
 			searchValue: "",
 			searchResults: "",
 			showSpinner: false,
-			noResults: false
+			noResults: false,
+			error: false
 		}
 
 		// Bind, "this" for handle methods
@@ -43,23 +43,28 @@ class Search extends React.Component {
 				body: JSON.stringify(value)
 			});
 
-			// Get data
-			const data = await resp.json();
+			// Check the status of the resp
+			if (resp.status === 200) {
+				const data = await resp.json();
 
-			if (data.length > 0) {
-				this.setState({
-					searchResults: data,
-					showSpinner: false
-				})
+				if (data.length > 0) {
+					this.setState({
+						searchResults: data,
+						showSpinner: false
+					})
+				} else {
+					this.setState({
+						noResults: true,
+						showSpinner: false
+					})
+				}
 			}
 
-			this.setState({
-				noResults: true,
-				showSpinner: false
-			})
+			if (resp.status === 500) throw new Error();
 		} catch (e) {
-			// TODO: Error handling
-			console.log(e);
+			this.setState({
+				error: true
+			});
 		}
 	}
 
@@ -76,23 +81,28 @@ class Search extends React.Component {
 				body: JSON.stringify(coords)
 			});
 
-			// Get data
-			const data = await resp.json();
+			// Check the status of the resp
+			if (resp.status === 200) {
+				const data = await resp.json();
 
-			if (data.length > 0) {
-				this.setState({
-					searchResults: data,
-					showSpinner: false
-				})
+				if (data.length > 0) {
+					this.setState({
+						searchResults: data,
+						showSpinner: false
+					})
+				} else {
+					this.setState({
+						noResults: true,
+						showSpinner: false
+					})
+				}
 			}
 
-			this.setState({
-				noResults: true,
-				showSpinner: false
-			})
+			if (resp.status === 500) throw new Error();
 		} catch (e) {
-			// TODO: Error handling
-			console.log(e);
+			this.setState({
+				error: true
+			});
 		}
 	}
 
@@ -186,6 +196,29 @@ class Search extends React.Component {
 			</Grid>
 		);
 
+		// Check if spinner is toggled
+		if (this.state.showSpinner) {
+			return (
+				<React.Fragment>
+					{searchForm}
+					<Spinner />
+				</React.Fragment>
+			)
+		}
+
+		// Check if an error is thrown
+		if (this.state.error) return <CustomAlert severity="error" title="An error has occurred!" message="There was an error processing your request. Please try again later." />;
+
+		// Check if no results are found
+		if (this.state.noResults) {
+			return (
+				<React.Fragment>
+					{searchForm}
+					<CustomAlert severity="warning" title="No Results" message="No locations have been found based on your input." />
+				</React.Fragment>
+			);
+		}
+
 		// Check if there are search results 
 		if (this.state.searchResults !== "") {
 			// Iterate through each search result and build the grid of search cards
@@ -193,13 +226,13 @@ class Search extends React.Component {
 			results.sort((a, b) => a.name.localeCompare(b.name));
 			const cards = [];
 
-			results.forEach(r => {
+			for (const r of results) {
 				cards.push(
 					<Grid item xs={4}>
 						<SearchCard name={r.name} intro={r.intro} id={r._id} state={r.part_of[0]} />
 					</Grid>
 				)
-			});
+			}
 
 			return (
 				<React.Fragment>
@@ -211,26 +244,6 @@ class Search extends React.Component {
 					</div>
 				</React.Fragment>
 			)
-		}
-
-		// Check if spinner is toggled
-		if (this.state.showSpinner) {
-			return (
-				<React.Fragment>
-					{searchForm}
-					<Spinner />
-				</React.Fragment>
-			)
-		}
-
-		// Check if no results are found
-		if (this.state.noResults) {
-			return (
-				<React.Fragment>
-					{searchForm}
-					<CustomAlert severity="warning" title="No Results" message="No locations have been found based on your input." />
-				</React.Fragment>
-			);
 		}
 
 		return searchForm;
