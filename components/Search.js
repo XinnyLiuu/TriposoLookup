@@ -1,9 +1,6 @@
 import React from 'react';
 import SearchCard from "./SearchCard";
-import {
-	Alert,
-	AlertTitle
-} from '@material-ui/lab';
+import CustomAlert from "./CustomAlert";
 import {
 	Button,
 	Grid,
@@ -122,7 +119,7 @@ class Search extends React.Component {
 	 * Handles the location button on click
 	 */
 	handleLocationButtonOnClick() {
-		if (this.props.location !== undefined || this.props.location !== null) {
+		if ("location" in this.props) {
 			// Get the coordinates of the user
 			const location = this.props.location;
 
@@ -231,12 +228,9 @@ class Search extends React.Component {
 			return (
 				<React.Fragment>
 					{searchForm}
-					<Alert severity="warning">
-						<AlertTitle>No Results!</AlertTitle>
-						No locations have been found matching your search.
-					</Alert>
+					<CustomAlert severity="warning" title="No Results" message="No locations have been found based on your input." />
 				</React.Fragment>
-			)
+			);
 		}
 
 		return searchForm;

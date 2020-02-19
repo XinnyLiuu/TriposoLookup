@@ -29,8 +29,7 @@ export default async (req, res) => {
 
             return res.status(200).json(result.modifiedCount);
         } catch (e) {
-            // TODO:
-            console.log(e);
+            return res.status(500).end();
         }
     }
 }

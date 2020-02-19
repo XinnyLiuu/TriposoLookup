@@ -21,17 +21,16 @@ export default async (req, res) => {
         try {
             // Get the location
             const location = await getDocById(query);
-
             return res.status(200).json(location);
         } catch (e) {
-            // TODO: Error handling 
-            console.log(e);
+            return res.status(500).end();
         }
     }
 }
 
 /**
  * Query db for a matching document with the provided id
+ * 
  * @param {*} query 
  */
 async function getDocById(query) {
@@ -46,13 +45,11 @@ async function getDocById(query) {
         // Get the image 
         if (doc.gridFSFile !== undefined) {
             const image = await getImage(db, doc.gridFSFile);
-
             doc.image = image !== undefined ? `data:image/jpeg;base64,${image}` : undefined;
         }
 
         return doc;
     } catch (e) {
-        // TODO: Error handling
-        console.log(e);
+        throw new Error(e);
     }
 }

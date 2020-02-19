@@ -11,6 +11,7 @@ import {
 	TextField,
 	Button
 } from '@material-ui/core';
+import CustomAlert from './CustomAlert';
 
 const styles = {
 	location: {
@@ -28,11 +29,12 @@ const styles = {
 	},
 	filler: {
 		textAlign: "center",
-		padding: "150px"
+		padding: "150px",
+		marginBottom: "15px"
 	},
 	comment: {
 		padding: "10px",
-		marginBottom: "5px"
+		marginBottom: "15px"
 	}
 };
 
@@ -48,7 +50,9 @@ class Details extends React.Component {
 			data: "",
 			comment: "",
 			commentAdded: false,
-			showSpinner: true
+			showSpinner: true,
+			commentLengthError: false,
+			error: false
 		};
 
 		this.handleTextFieldOnChange = this.handleTextFieldOnChange.bind(this);
@@ -63,13 +67,19 @@ class Details extends React.Component {
 			const resp = await fetch(`/api/location/${this.props.id}`);
 			const data = await resp.json();
 
-			this.setState({
-				showSpinner: false,
-				data: data
-			});
+			// Check resp status
+			if (resp.status === 200) {
+				this.setState({
+					showSpinner: false,
+					data: data
+				});
+			}
+
+			if (resp.status === 500) throw new Error();
 		} catch (e) {
-			// TODO: Error handling
-			console.log(e);
+			this.setState({
+				error: true
+			});
 		}
 	}
 
@@ -92,22 +102,26 @@ class Details extends React.Component {
 				body: JSON.stringify(data)
 			});
 
-			const modified = await resp.json();
+			// Check the status of the response 
+			if (resp.status === 200) {
+				const modified = await resp.json();
 
-			if (resp.status === 200 && modified === 1) {
-				this.setState({
-					showSpinner: true,
-					commentAdded: true,
-					comment: ""
-				});
+				if (modified === 1) {
+					this.setState({
+						showSpinner: true,
+						commentAdded: true,
+						comment: ""
+					});
 
-				this.fetchLocationDetails();
+					this.fetchLocationDetails();
+				}
 			}
 
-			// TODO: What if the modified count is not 1? Show an alert error
+			if (resp.status === 500) throw new Error();
 		} catch (e) {
-			// TODO: Error handling
-			console.log(e);
+			this.setState({
+				error: true
+			});
 		}
 	}
 
@@ -119,7 +133,8 @@ class Details extends React.Component {
 	handleTextFieldOnChange(e) {
 		this.setState({
 			comment: e.target.value,
-			commentAdded: false
+			commentAdded: false,
+			commentLengthError: false
 		});
 	}
 
@@ -127,25 +142,35 @@ class Details extends React.Component {
 	 * Handles the post button on click
 	 */
 	handlePostButtonOnClick() {
-		this.state.comment.length > 50 ? this.addCommentForLocation() : alert("Comment not long enough!");
-	}
-
-	componentDidMount() {
-		// Check that id has been passed into props and fetch the data for this location
-		if (this.props.id !== undefined || this.props.id !== null) {
-			this.fetchLocationDetails();
+		if (this.state.comment.length >= 50) {
+			this.addCommentForLocation();
+		}
+		else {
+			this.setState({
+				commentLengthError: true
+			});
 		}
 	}
 
+	componentDidMount() {
+		this.fetchLocationDetails();
+	}
+
 	render() {
-		// Get the styles from makeStyles hook
+		// Get the styles from makeStyles hook	
 		const classes = this.props.classes;
 
-		// Check that data state is ready
-		if (this.state.data !== "" || this.state.commentAdded) {
+		// Check if the spinner is to be shown
+		if (this.state.showSpinner) return <Spinner />;
+
+		// Check if an error is thrown
+		if (this.state.error) return <CustomAlert severity="error" title="An error has occurred!" message="There was an error processing your request. Please try again later." />;
+
+		// Check that data state is ready or if a comment has been added
+		if (this.state.data !== "" || this.state.commentAdded || this.state.commentLengthError) {
 			const details = this.state.data;
 
-			// Prepare the comments
+			// Comments layout
 			let comments = (
 				<Paper className={classes.filler}>
 					<Typography variant="body1" color="textSecondary">
@@ -154,6 +179,7 @@ class Details extends React.Component {
 				</Paper>
 			);
 
+			// Show the comments for this location if any is apparent
 			if (details.comments.length > 0) {
 				comments = [];
 
@@ -187,31 +213,22 @@ class Details extends React.Component {
 								</Typography>
 								<Typography gutterBottom variant="subtitle2" color="textSecondary">
 									Longitude: {details.loc.coordinates[0].toFixed(3)}, Latitude: {details.loc.coordinates[1].toFixed(3)} {
-										details.climate !== null ? `,Temperature: ${details.climate.temperature.average_max.months[0]}` : ""
-									}
+										details.climate !== null ? `,Temperature: ${details.climate.temperature.average_max.months[0]}` : ""}
 								</Typography>
 							</CardContent>
 						</Card>
-
+						{this.state.commentLengthError ? <CustomAlert severity="warning" title="Comment length" message="Please input a comment that is more than 50 characters!" /> : <span></span>}
 						<Paper className={classes.paper}>
 							<TextField label="Been here? Leave a Comment" margin="dense" fullWidth onChange={this.handleTextFieldOnChange} value={this.state.comment} />
 							<Button variant="contained" color="primary" variant="outlined" onClick={this.handlePostButtonOnClick}>
 								Post
-							</Button>
+								</Button>
 						</Paper>
-
 						{comments}
 					</Grid>
-
-					{/* <Grid item xs={5}>
-
-					</Grid> */}
 				</Grid>
-			)
+			);
 		}
-
-		// Check if the spinner is to be shown
-		if (this.state.showSpinner) return <Spinner />;
 	}
 }
 
