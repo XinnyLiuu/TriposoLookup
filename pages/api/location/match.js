@@ -27,14 +27,11 @@ export default async (req, res) => {
 		try {
 			// Get the docs and return it
 			const docs = await queryMatchedDocs(query);
-
 			return res.status(200).json(docs);
 		} catch (e) {
 			// TODO: Error handling 
 			console.log(e);
 		}
-	} else {
-		// TODO: Handle any other requests
 	}
 }
 

@@ -1,12 +1,13 @@
 import React from 'react';
 import SearchCard from "./SearchCard";
-import TextField from '@material-ui/core/TextField';
 import {
 	Alert,
 	AlertTitle
 } from '@material-ui/lab';
 import {
-	Button, Grid
+	Button,
+	Grid,
+	TextField
 } from "@material-ui/core";
 import Spinner from './Spinner';
 
@@ -134,8 +135,11 @@ class Search extends React.Component {
 			};
 
 			this.setState({
-				showSpinner: true
-			})
+				showSpinner: true,
+				searchValue: ""
+			});
+
+			localStorage.setItem("searchValue", "");
 
 			// Get data nearby the specified location
 			this.fetchNearbyData(coords);
@@ -150,7 +154,7 @@ class Search extends React.Component {
 			searchValue: e.target.value,
 			searchResults: "",
 			noResults: false
-		})
+		});
 
 		localStorage.setItem("searchValue", e.target.value);
 	}
@@ -159,6 +163,7 @@ class Search extends React.Component {
 		// Check if a search value has been queried before
 		if (localStorage.getItem("searchValue") !== "") {
 			this.setState({
+				showSpinner: true,
 				searchValue: localStorage.getItem("searchValue")
 			}, () => {
 				this.fetchMatchingData(this.state.searchValue);

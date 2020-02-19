@@ -2,7 +2,6 @@ import React from "react";
 import Spinner from "../../components/Spinner";
 import Layout from "../../components/Layout";
 import Details from "../../components/Details";
-import fetch from 'isomorphic-unfetch'
 
 /**
  * This file routes to /location/:id 
@@ -13,9 +12,9 @@ import fetch from 'isomorphic-unfetch'
  */
 
 const LocationId = (props) => {
-    if (props.data !== undefined || props.data !== null) {
+    if (props.id !== undefined || props.id !== null) {
         return (
-            <Layout component={<Details data={props.data} />} />
+            <Layout component={<Details id={props.id} />} />
         );
     }
 
@@ -33,15 +32,7 @@ LocationId.getInitialProps = async (ctx) => {
 
     // Check if id exists
     if (id !== undefined || id !== null) {
-        try {
-            const resp = await fetch(`http://${ctx.req.headers.host}/api/location/${id}`);
-            const details = await resp.json();
-
-            return { data: JSON.stringify(details) };
-        } catch (e) {
-            // TODO: Error handling
-            console.log(e);
-        }
+        return { id: id };
     }
 }
 

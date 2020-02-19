@@ -46,7 +46,7 @@ async function getDocById(query) {
         // Get the image 
         if (doc.gridFSFile !== undefined) {
             const image = await getImage(db, doc.gridFSFile);
-            
+
             doc.image = image !== undefined ? `data:image/jpeg;base64,${image}` : undefined;
         }
 

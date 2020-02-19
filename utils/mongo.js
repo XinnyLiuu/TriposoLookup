@@ -32,9 +32,7 @@ export const connect = async () => {
  */
 export const find = async (db, query) => {
 	try {
-		const docs = await db.collection(COLLECTION).find(query).toArray();
-
-		return docs;
+		return await db.collection(COLLECTION).find(query).toArray();
 	} catch (e) {
 		// TODO: Add error handler
 		console.log(e);
@@ -62,4 +60,20 @@ export const getImage = (db, file) => {
 			})
 			.on('end', () => resolve(Buffer.concat(chunks).toString("base64")));
 	})
+}
+
+/**
+ * Adds an comment to a location
+ * 
+ * @param {*} db 
+ * @param {*} query 
+ * @param {*} update 
+ */
+export const addComment = async (db, query, update) => {
+	try {
+		return await db.collection(COLLECTION).updateOne(query, update);
+	} catch (e) {
+		// TODO: Add error handler
+		console.log(e);
+	}
 }
