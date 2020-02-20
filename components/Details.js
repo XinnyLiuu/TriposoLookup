@@ -30,7 +30,7 @@ const styles = {
 	filler: {
 		textAlign: "center",
 		padding: "150px",
-		marginBottom: "15px"
+		marginBottom: "20px"
 	},
 	comment: {
 		padding: "10px",
@@ -65,10 +65,29 @@ class Details extends React.Component {
 	async fetchLocationDetails() {
 		try {
 			const resp = await fetch(`/api/location/${this.props.id}`);
-			const data = await resp.json();
 
 			// Check resp status
 			if (resp.status === 200) {
+				const data = await resp.json();
+
+				// Get the average min and max temperature based on the current month
+				if ("climate" in data && data.climate !== null) {
+
+					// Get the current month 
+					const month = new Date().getMonth();
+					const names = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+					data.temp = {
+						month: names[month],
+						average_max: data.climate.temperature.average_max.months[month],
+						average_min: data.climate.temperature.average_min.months[month]
+					}
+
+					// Convert C to F
+					data.temp.average_max = data.temp.average_max * 9 / 5 + 32;
+					data.temp.average_min = data.temp.average_min * 9 / 5 + 32;
+				}
+
 				this.setState({
 					showSpinner: false,
 					data: data
@@ -211,10 +230,14 @@ class Details extends React.Component {
 								<Typography gutterBottom variant="body1" color="textSecondary">
 									{details.intro}
 								</Typography>
-								<Typography gutterBottom variant="subtitle2" color="textSecondary">
-									Longitude: {details.loc.coordinates[0].toFixed(3)}, Latitude: {details.loc.coordinates[1].toFixed(3)} {
-										details.climate !== null ? `,Temperature: ${details.climate.temperature.average_max.months[0]}` : ""}
+								<Typography gutterBottom variant="caption" color="textSecondary">
+									Longitude: {details.loc.coordinates[0].toFixed(3)} | Latitude: {details.loc.coordinates[1].toFixed(3)}
 								</Typography>
+								<br />
+								<Typography gutterBottom variant="caption" color="textSecondary">
+									{details.climate !== null ? `Temp for ${details.temp.month} - Avg Max: ${details.temp.average_max.toFixed(2)} \u2109, Avg Min: ${details.temp.average_min.toFixed(2)} \u2109` : ""}
+								</Typography>
+
 							</CardContent>
 						</Card>
 						{this.state.commentLengthError ? <CustomAlert severity="warning" title="Comment length" message="Please input a comment that is more than 50 characters!" /> : <span></span>}
