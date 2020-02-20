@@ -17,8 +17,10 @@ const TOKEN = "5ramecfgkf0u2x0hw8eatg3008f4krkt";
 async function getData() {
     let count = 0
 
-    query_arr.forEach(async state => {
+    for (const state of query_arr) {
         let url = `https://www.triposo.com/api/20190906/location.json?account=${ACCOUNT}&token=${TOKEN}&us_statecode=${state}&count=100&fields=images,coordinates,intro,climate,name,part_of`;
+
+        console.log(`GET ${url}`);
 
         try {
             // Fire request calls
@@ -26,7 +28,7 @@ async function getData() {
             const data = resp.data;
 
             // Iterate through results on each data and append to json
-            data.results.forEach(d => json.push(d));
+            for (const d of data.results) json.push(d);
 
             // Tally
             count++;
@@ -36,7 +38,7 @@ async function getData() {
         } catch (e) {
             console.log(e);
         }
-    });
+    }
 }
 
 /**

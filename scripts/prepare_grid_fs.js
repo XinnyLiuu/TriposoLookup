@@ -5,12 +5,13 @@ const MongoClient = require("mongodb").MongoClient;
 const GridFSBucket = require("mongodb").GridFSBucket;
 const ObjectID = require("mongodb").ObjectID;
 
-/**
- * This script will retrieve all triposo records in the database, download the specific image, upload them to GridFS, update the document to have a reference to the GridFS document
- */
 const DB_NAME = "triposo";
 const COLLECTION_NAME = "locations";
 const CONNECTION_URL = "mongodb://localhost:27017";
+
+/**
+ * This script will retrieve all triposo records in the database, download the specific image, upload them to GridFS, update the document to have a reference to the GridFS document
+ */
 
 async function prepareGridFS() {
 	try {
@@ -79,11 +80,7 @@ async function prepareGridFS() {
 				}
 			}
 		}, (err) => {
-			console.log(err);
 			if (err) throw err;
-
-			console.log("Done");
-			return;
 		});
 	} catch (e) {
 		console.log(e);

@@ -1,13 +1,27 @@
-/**
- * This script is to be ran through mongo and adds a '2dsphere' index and parses the dataset to add a 'loc' field that will be used by MongoDB to query for geolocation
- * 
- * USAGE: `mongo add_location.js`
- */
-
 // Connection + Data
 const connection = new Mongo("localhost:27017");
 const db = connection.getDB("triposo");
 const collectionLocations = db.getCollection("locations");
+
+/**
+ * This script is to be ran through mongo and:
+ * 
+ * - Adds a comments array to each document to store comments for locations.
+ * 
+ * - Adds a '2dsphere' index and parses the dataset to add a 'loc' field that will be used by MongoDB to query for geolocation
+ * 
+ * USAGE: `mongo mongo_data_prep.js`
+ */
+
+// Adds an empty comments array to each document
+function addComments() {
+    collectionLocations.find().forEach(doc => {
+        collectionLocations.update(
+            { _id: doc._id },
+            { $set: { comments: [] } }
+        )
+    })
+}
 
 // Create 2dsphere index
 function createIndex() {
@@ -52,3 +66,4 @@ function addLoc() {
 
 createIndex();
 addLoc();
+addComments();
