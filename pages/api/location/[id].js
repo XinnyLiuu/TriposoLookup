@@ -23,6 +23,7 @@ export default async (req, res) => {
             const location = await getDocById(query);
             return res.status(200).json(location);
         } catch (e) {
+            console.log(e);
             return res.status(500).end();
         }
     }
@@ -46,9 +47,13 @@ async function getDocById(query) {
         if (doc.gridFSFile !== undefined) {
             const image = await getImage(db, doc.gridFSFile);
             doc.image = image !== undefined ? `data:image/jpeg;base64,${image}` : undefined;
+            return doc;
         }
 
-        return doc;
+        if (doc.images !== undefined || doc.iamges !== null) {
+            doc.image = doc.images[0].sizes.original.url;
+            return doc;
+        }
     } catch (e) {
         throw new Error(e);
     }

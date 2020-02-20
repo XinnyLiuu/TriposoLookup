@@ -31,9 +31,11 @@ async function prepareGridFS() {
 		// Setup GridFS
 		const bucket = new GridFSBucket(db);
 
+		let count = 0; // Only store 100 images due to Mongo Atlas Free Tier constraints
+
 		// Iterate through the documents using the async library to prevent EMFILE
-		async.eachLimit(docs, 1000, async (d) => {
-			if ("images" in d && d["images"].length > 0) {
+		async.eachLimit(docs, 1, async (d) => {
+			if (count < 100 && "images" in d && d["images"].length > 0) {
 				// Get the image url  
 				const url = d.images[0].source_url;
 
@@ -65,6 +67,7 @@ async function prepareGridFS() {
 							})
 							.on('finish', () => {
 								console.log(`Saved ${file}`);
+								count += 1;
 							})
 					)
 
@@ -80,7 +83,8 @@ async function prepareGridFS() {
 				}
 			}
 		}, (err) => {
-			if (err) throw err;
+			if (err) console.log(err);
+			if (count === 100) console.log("Done.");
 		});
 	} catch (e) {
 		console.log(e);

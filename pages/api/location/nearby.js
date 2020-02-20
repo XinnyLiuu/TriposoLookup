@@ -32,6 +32,7 @@ export default async (req, res) => {
             const docs = await queryNearbyDocs(query);
             return res.status(200).json(docs);
         } catch (e) {
+            console.log(e);
             return res.status(500).end();
         }
     }
