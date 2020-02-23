@@ -39,7 +39,7 @@ export default async (req, res) => {
 }
 
 /**
- * Query db for all matching documents
+ * Query db for all matching nearby documents
  * @param {*} query 
  */
 async function queryNearbyDocs(query) {
