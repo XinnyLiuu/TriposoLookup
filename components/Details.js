@@ -64,7 +64,7 @@ class Details extends React.Component {
 	 */
 	async fetchLocationDetails() {
 		try {
-			const resp = await fetch(`/api/location/${this.props.id}`);
+			const resp = await fetch(`${process.env.get_location_by_id_api}${this.props.id}`);
 
 			// Check resp status
 			if (resp.status === 200) {
@@ -106,19 +106,21 @@ class Details extends React.Component {
 	 * Sends a POST request to /api/location/comment
 	 */
 	async addCommentForLocation() {
-		try {
-			// Prepare the data
-			const data = {
-				id: this.state.data._id,
-				comment: this.state.comment
-			}
-
-			const resp = await fetch("/api/location/comment", {
+		console.log({
+			"id": this.state.data._id,
+			"comment": this.state.comment
+		});
+		
+		try {			
+			const resp = await fetch(process.env.post_comment_api, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json"
 				},
-				body: JSON.stringify(data)
+				body: JSON.stringify({
+					"id": this.state.data._id,
+					"comment": this.state.comment
+				})
 			});
 
 			// Check the status of the response 

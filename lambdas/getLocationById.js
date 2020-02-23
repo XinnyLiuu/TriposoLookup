@@ -104,11 +104,19 @@ exports.handler = async (event, context) => {
 
 		return {
 			statusCode: 200,
+			headers: {
+				'Access-Control-Allow-Origin': '*', // Required for CORS support to work
+				'Access-Control-Allow-Credentials': true, // Required for cookies, authorization headers with HTTPS			
+			},
 			body: JSON.stringify(location)
 		};
 	} catch (e) {
 		return {
-			statusCode: 500,
+			statusCode: 500,			
+			headers: {
+				'Access-Control-Allow-Origin': '*', // Required for CORS support to work
+				'Access-Control-Allow-Credentials': true, // Required for cookies, authorization headers with HTTPS			
+			},
 			body: JSON.stringify(e)
 		};
 	}

@@ -35,12 +35,14 @@ class Search extends React.Component {
 	 */
 	async fetchMatchingData(value) {
 		try {
-			const resp = await fetch("/api/location/match", {
+			const resp = await fetch(process.env.post_location_by_match_api, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json"
 				},
-				body: JSON.stringify(value)
+				body: JSON.stringify({
+					"value": value
+				})
 			});
 
 			// Check the status of the resp
@@ -73,12 +75,14 @@ class Search extends React.Component {
 	 */
 	async fetchNearbyData(coords) {
 		try {
-			const resp = await fetch("/api/location/nearby", {
+			const resp = await fetch(process.env.post_location_by_nearby_api, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json"
 				},
-				body: JSON.stringify(coords)
+				body: JSON.stringify({
+					"coords": coords
+				})
 			});
 
 			// Check the status of the resp

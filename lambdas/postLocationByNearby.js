@@ -71,14 +71,22 @@ exports.handler = async (event, context) => {
         // Get the matching documents
         const docs = await queryNearbyDocs(query);
 
-        return {
-            statusCode: 200,
-            body: JSON.stringify(docs)
-        };
+		return {
+			statusCode: 200,
+			headers: {
+				'Access-Control-Allow-Origin': '*', // Required for CORS support to work
+				'Access-Control-Allow-Credentials': true, // Required for cookies, authorization headers with HTTPS			
+			},
+			body: JSON.stringify(docs)
+		};
     } catch (e) {
-        return {
-            statusCode: 500,
-            body: JSON.stringify(e)
-        };
+		return {
+			statusCode: 500,
+			headers: {
+				'Access-Control-Allow-Origin': '*', // Required for CORS support to work
+				'Access-Control-Allow-Credentials': true, // Required for cookies, authorization headers with HTTPS			
+			},
+			body: JSON.stringify(e)
+		};
     }
 }
