@@ -1,6 +1,8 @@
 'use strict';
 
 /** 
+ * GET /api/location/[id]
+ * 
  * Connects to db and queries the location by id
  */
 
@@ -106,7 +108,8 @@ exports.handler = async (event, context) => {
 		};
 	} catch (e) {
 		return {
-			statusCode: 500
+			statusCode: 500,
+			body: JSON.stringify(e)
 		};
 	}
 }

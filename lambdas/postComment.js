@@ -1,6 +1,8 @@
 'use strict';
 
 /** 
+ * POST /api/location/comment 
+ * 
  * Connects to db and adds a comment to a specified location by id
  */
 
@@ -41,10 +43,8 @@ async function addComment(query, update) {
         const db = await connect(CONNECTION_URL);
 
         // Update the document
-        const result = await db.collection(DB_COLLECTION)
+        return await db.collection(DB_COLLECTION)
             .updateOne(query, update);
-
-        return result;
     } catch (e) {
         throw new Error(e);
     }
@@ -72,8 +72,9 @@ exports.handler = async (event, context) => {
             body: JSON.stringify(result.modifiedCount)
         };
     } catch (e) {
-        return {
-            statusCode: 500
-        };
+		return {
+			statusCode: 500,
+			body: JSON.stringify(e)
+		};
     }
 }

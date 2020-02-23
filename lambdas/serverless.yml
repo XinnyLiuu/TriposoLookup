@@ -69,13 +69,19 @@ functions:
             parameters:
               paths:
                 id: true
-  add-comment:
-    handler: addComment.handler
+  post-comment:
+    handler: postComment.handler
     events:
       - http:
           method: post
           path: /api/location/comment
   
+  post-location-by-match:
+    handler: postLocationByMatch.handler
+    events:
+      - http:
+          method: post
+          path: /api/location/match
 
   
   
