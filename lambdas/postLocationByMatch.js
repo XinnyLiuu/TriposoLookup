@@ -44,6 +44,7 @@ async function queryMatchedDocs(query) {
 		// Get every matching document in MongoDB
 		return await db.collection(DB_COLLECTION)
 			.find(query)
+			.limit(100)
 			.toArray();
 	} catch (e) {
 		throw new Error(e);
