@@ -4,9 +4,34 @@ import CustomAlert from "./CustomAlert";
 import {
 	Button,
 	Grid,
-	TextField
+	TextField,
+	withStyles
 } from "@material-ui/core";
 import Spinner from './Spinner';
+
+const styles = theme => ({
+	searchField: {
+		width: 300,
+		marginRight: 10
+	},
+	searchButton: {
+		marginRight: "5px"
+	},
+	cardsGrid: {
+		width: "unset", 
+		margin: "unset",
+		[theme.breakpoints.down('sm')]: {
+			flexDirection: "column",
+			alignItems: "center",
+			width: "100%"
+		}
+	},
+	card: {
+		[theme.breakpoints.down('sm')]: {
+			minWidth: "350px"
+		}
+	}
+});
 
 /**
  * Refer to https://material-ui.com/components/autocomplete/
@@ -183,14 +208,17 @@ class Search extends React.Component {
 	}
 
 	render() {
+		// Get the styles from makeStyles hook	
+		const classes = this.props.classes;		
+		
 		// Build the search form
 		const searchForm = (
-			<Grid container direction="row" justify="center" alignItems="center">
-				<Grid item style={{ width: 300, marginRight: 10 }}>
+			<Grid container direction="column" justify="center" alignItems="center">
+				<Grid item className={classes.searchField}>
 					<TextField label="Search a String (US Locations)" margin="normal" fullWidth type="search" value={this.state.searchValue} variant="outlined" onChange={this.handleTextFieldOnChange} />
 				</Grid>
 				<Grid item>
-					<Button variant="contained" color="primary" onClick={this.handleSearchButtonOnClick} style={{ marginRight: "5px" }}>
+					<Button variant="contained" color="primary" onClick={this.handleSearchButtonOnClick} className={classes.searchButton}>
 						Search
 					</Button>
 					<Button variant="outlined" color="primary" onClick={this.handleLocationButtonOnClick}>
@@ -232,7 +260,7 @@ class Search extends React.Component {
 
 			for (const r of results) {
 				cards.push(
-					<Grid item xs={4}>
+					<Grid item xs={4} className={classes.card}>
 						<SearchCard name={r.name} intro={r.intro} id={r._id} state={r.part_of[0]} />
 					</Grid>
 				)
@@ -242,7 +270,7 @@ class Search extends React.Component {
 				<React.Fragment>
 					{searchForm}
 					<div style={{ flexGrow: 1 }}>
-						<Grid container spacing={3} style={{ width: "unset", margin: "unset" }}>
+						<Grid container spacing={3} className={classes.cardsGrid}>
 							{cards}
 						</Grid>
 					</div>
@@ -254,4 +282,4 @@ class Search extends React.Component {
 	}
 }
 
-export default Search;
+export default withStyles(styles)(Search);
