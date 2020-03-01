@@ -15,7 +15,7 @@ class Home extends React.Component {
 		}
 	}
 
-	render() {
+	render() {		
 		if (this.props.coords !== undefined || this.props.coords !== null) {
 			return (
 				<Grid container direction="column" alignItems="center" justify="center">

@@ -106,11 +106,6 @@ class Details extends React.Component {
 	 * Sends a POST request to /api/location/comment
 	 */
 	async addCommentForLocation() {
-		console.log({
-			"id": this.state.data._id,
-			"comment": this.state.comment
-		});
-		
 		try {			
 			const resp = await fetch(process.env.post_comment_api, {
 				method: "POST",

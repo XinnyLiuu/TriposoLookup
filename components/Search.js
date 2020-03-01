@@ -18,7 +18,7 @@ const styles = theme => ({
 		marginRight: "5px"
 	},
 	cardsGrid: {
-		width: "unset", 
+		width: "unset",
 		margin: "unset",
 		[theme.breakpoints.down('sm')]: {
 			flexDirection: "column",
@@ -147,10 +147,10 @@ class Search extends React.Component {
 				noResults: false,
 			});
 
-			localStorage.setItem("searchValue", this.state.searchValue);
+			localStorage.setItem("searchValue", this.state.searchValue.trim());
 
 			// Get data
-			this.fetchMatchingData(this.state.searchValue)
+			this.fetchMatchingData(this.state.searchValue.trim());
 		}
 	}
 
@@ -192,25 +192,25 @@ class Search extends React.Component {
 			noResults: false
 		});
 
-		localStorage.setItem("searchValue", e.target.value);
+		localStorage.setItem("searchValue", e.target.value.trim());
 	}
 
 	componentDidMount() {
 		// Check if a search value has been queried before
-		if (localStorage.getItem("searchValue") !== "") {
+		if (localStorage.getItem("searchValue") !== "" && localStorage.getItem("searchValue") !== null) {
 			this.setState({
 				showSpinner: true,
 				searchValue: localStorage.getItem("searchValue")
 			}, () => {
 				this.fetchMatchingData(this.state.searchValue);
-			})
+			});
 		}
 	}
 
 	render() {
 		// Get the styles from makeStyles hook	
-		const classes = this.props.classes;		
-		
+		const classes = this.props.classes;
+
 		// Build the search form
 		const searchForm = (
 			<Grid container direction="column" justify="center" alignItems="center">
@@ -258,6 +258,23 @@ class Search extends React.Component {
 			results.sort((a, b) => a.name.localeCompare(b.name));
 			const cards = [];
 
+			// Highlight the searched word in the results
+			const keyword = this.state.searchValue;
+
+			if (keyword !== "") {
+				for (const r of results) {
+					const intro = r.intro.toLowerCase();
+
+					if (intro.includes(keyword)) {
+						const start = intro.indexOf(keyword);
+						const end = start + keyword.length;
+
+						r.intro = [r.intro.slice(0, start - 1), '&lt;strong&gt;', r.intro.slice(start, end), '&lt;/strong&gt;', r.intro.slice(end, intro.length)].join(" ").trim();
+					}
+				}
+			}
+
+			// Create the GUI for each result
 			for (const r of results) {
 				cards.push(
 					<Grid item xs={4} className={classes.card}>
